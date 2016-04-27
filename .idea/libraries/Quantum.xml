@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Quantum">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/libs/Quantum.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
