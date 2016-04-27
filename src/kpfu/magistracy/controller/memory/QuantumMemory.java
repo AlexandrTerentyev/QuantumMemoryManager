@@ -2,25 +2,25 @@ package kpfu.magistracy.controller.memory;
 
 import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface QuantumMemory {
 
-    public long getMaxMemoryFrequency();
+    long getMaxMemoryFrequency();
 
-    public long getMinMemoryFrequency();
+    long getMinMemoryFrequency();
 
-    public long getFrequencyStep();
+    long getFrequencyStep();
 
-    public int getProcessingUnitsCount();
+    int getProcessingUnitsCount();
 
-    public long getMaxMemoryTimeCycle();
+    long getMaxMemoryTimeCycle();
 
-    public long getMemoryTimeStep();
+    long getMemoryTimeStep();
 
-    public void initMemory();
+    void initMemory();
 
-    public boolean isMemoryAvailable();
+    boolean isMemoryAvailable();
 
-    public void clearMemoryState(List<QuantumMemoryAddress> quantumMemoryAddresses);
+    void clearMemoryState(Collection<QuantumMemoryAddress> quantumMemoryAddresses);
 }
