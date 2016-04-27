@@ -2,12 +2,11 @@ package kpfu.magistracy.controller.execution;
 
 import java.util.List;
 
-public class GeneralCommand {
+public class GeneralResult {
 
     private long userId;
 
     private int userCommandNumber;
 
-    private List<SingleCommand> mSingleCommands;
-
+    private List<Boolean> measureResults;
 }
