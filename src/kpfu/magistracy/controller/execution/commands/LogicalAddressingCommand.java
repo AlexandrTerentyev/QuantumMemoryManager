@@ -1,15 +1,21 @@
-package kpfu.magistracy.controller.execution;
+package kpfu.magistracy.controller.execution.commands;
 
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
 import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
 
 public class LogicalAddressingCommand {
-
+    @NotNull
     private CommandTypes mCommandType;
 
+    @NotNull
     private Double mCommandParam;
 
+    @NotNull
     private LogicalQubitAddress mQubit_1;
+    @NotNull
     private LogicalQubitAddress mQubit_2;
+    @Nullable
     private LogicalQubitAddress mQubit_3;
 
     public CommandTypes getCommandType() {
@@ -40,27 +46,27 @@ public class LogicalAddressingCommand {
             logicalAddressingCommand = new LogicalAddressingCommand();
         }
 
-        public Builder setCommand(CommandTypes commandType) {
+        public Builder setCommand(@NotNull CommandTypes commandType) {
             logicalAddressingCommand.mCommandType = commandType;
             return this;
         }
 
-        public Builder setCommandParam(Double commandParam) {
+        public Builder setCommandParam(@NotNull Double commandParam) {
             logicalAddressingCommand.mCommandParam = commandParam;
             return this;
         }
 
-        public Builder setFirstQubit(LogicalQubitAddress qubitAddress) {
+        public Builder setFirstQubit(@NotNull LogicalQubitAddress qubitAddress) {
             logicalAddressingCommand.mQubit_1 = qubitAddress;
             return this;
         }
 
-        public Builder setSecondQubit(LogicalQubitAddress qubitAddress) {
+        public Builder setSecondQubit(@NotNull LogicalQubitAddress qubitAddress) {
             logicalAddressingCommand.mQubit_2 = qubitAddress;
             return this;
         }
 
-        public Builder setThirdQubit(LogicalQubitAddress qubitAddress) {
+        public Builder setThirdQubit(@NotNull LogicalQubitAddress qubitAddress) {
             logicalAddressingCommand.mQubit_3 = qubitAddress;
             return this;
         }

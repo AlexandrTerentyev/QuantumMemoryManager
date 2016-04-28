@@ -1,7 +1,8 @@
 package kpfu.magistracy.controller.memory;
 
+import kpfu.magistracy.controller.execution.commands.PhysicalAddressingCommand;
+import kpfu.magistracy.controller.execution.results.LowLevelResult;
 import kpfu.terentyev.quantum.api.KazanModel.Emulator;
-import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
 
 import java.util.List;
 
@@ -9,8 +10,8 @@ public class EmulatedQuantumMemory implements QuantumMemory {
 
     private Emulator mEmulator;
 
-    public EmulatedQuantumMemory(){
-        mEmulator = new Emulator(getMaxMemoryFrequency(),getMinMemoryFrequency(),getMaxMemoryTimeCycle(),getProcessingUnitsCount());
+    public EmulatedQuantumMemory() {
+        mEmulator = new Emulator(getMaxMemoryFrequency(), getMinMemoryFrequency(), getMaxMemoryTimeCycle(), getProcessingUnitsCount());
     }
 
     @Override
@@ -46,7 +47,7 @@ public class EmulatedQuantumMemory implements QuantumMemory {
     @Override
     public void initMemory() {
         if (mEmulator == null) {
-            mEmulator = new Emulator(getMaxMemoryFrequency(),getMinMemoryFrequency(),getMaxMemoryTimeCycle(),getProcessingUnitsCount());
+            mEmulator = new Emulator(getMaxMemoryFrequency(), getMinMemoryFrequency(), getMaxMemoryTimeCycle(), getProcessingUnitsCount());
         } else {
             throw new IllegalStateException("Memory already initialized");
         }
@@ -58,10 +59,9 @@ public class EmulatedQuantumMemory implements QuantumMemory {
     }
 
     @Override
-    public void clearMemoryState(List<QuantumMemoryAddress> quantumMemoryAddresses) {
-        for (QuantumMemoryAddress quantumMemoryAddress : quantumMemoryAddresses){
-            mEmulator.measure(quantumMemoryAddress);
-        }
+    public List<LowLevelResult> perform(List<PhysicalAddressingCommand> physicalAddressingCommands) {
+        //// TODO: 28.04.2016
+        return null;
     }
 
 }
