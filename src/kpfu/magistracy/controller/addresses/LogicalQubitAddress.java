@@ -1,17 +1,13 @@
 package kpfu.magistracy.controller.addresses;
 
 public class LogicalQubitAddress {
-    Integer logicalQubitNumber;
-    // номер физического кубита внутри логического,
-    //принимает значения 0 и 1
-    Integer physicalQubitNumberInLogical;
     //todo for Andrey
-    private long address;
+    private long systemCurrentTime;
 
     private int memoryPart;
 
-    public long getAddress() {
-        return address;
+    public long getSystemCurrentTime() {
+        return systemCurrentTime;
     }
 
     public int getMemoryPart() {
@@ -25,7 +21,7 @@ public class LogicalQubitAddress {
 
         LogicalQubitAddress that = (LogicalQubitAddress) o;
 
-        return getAddress() == that.getAddress() && getMemoryPart() == that.getMemoryPart();
+        return getSystemCurrentTime() == that.getSystemCurrentTime() && getMemoryPart() == that.getMemoryPart();
 
     }
 

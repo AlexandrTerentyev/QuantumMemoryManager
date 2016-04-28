@@ -1,5 +1,12 @@
 package kpfu.magistracy.controller.execution.commands;
 
+import com.google.gson.annotations.SerializedName;
+
 public enum CommandTypes {
-    CQET, QET, PHASE
+    @SerializedName("CQET")
+    CQET,
+    @SerializedName("QET")
+    QET,
+    @SerializedName("PHASE")
+    PHASE;
 }

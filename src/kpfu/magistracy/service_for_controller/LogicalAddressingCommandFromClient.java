@@ -1,6 +1,6 @@
 package kpfu.magistracy.service_for_controller;
 
-import kpfu.magistracy.controller.execution.CommandTypes;
+import kpfu.magistracy.controller.execution.commands.CommandTypes;
 
 
 public class LogicalAddressingCommandFromClient {
