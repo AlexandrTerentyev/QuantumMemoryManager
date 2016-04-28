@@ -3,7 +3,7 @@ package kpfu.magistracy.controller.memory;
 import kpfu.terentyev.quantum.api.KazanModel.Emulator;
 import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
 
-import java.util.List;
+import java.util.Collection;
 
 public class EmulatedQuantumMemory implements QuantumMemory {
 
@@ -58,7 +58,7 @@ public class EmulatedQuantumMemory implements QuantumMemory {
     }
 
     @Override
-    public void clearMemoryState(List<QuantumMemoryAddress> quantumMemoryAddresses) {
+    public void clearMemoryState(Collection<QuantumMemoryAddress> quantumMemoryAddresses) {
         for (QuantumMemoryAddress quantumMemoryAddress : quantumMemoryAddresses){
             mEmulator.measure(quantumMemoryAddress);
         }

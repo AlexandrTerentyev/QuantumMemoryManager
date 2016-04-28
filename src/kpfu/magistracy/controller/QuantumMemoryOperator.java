@@ -16,13 +16,13 @@ public class QuantumMemoryOperator {
 
     private static MemoryStateKeeper mMemoryStateKeeper;
 
-    public static void initialize(){
+    public static void initialize() {
         //todo initialize real memory or emulator
         mQuantumMemory = new EmulatedQuantumMemory();
         mMemoryStateKeeper = new MemoryStateKeeper(mQuantumMemory);
     }
 
-    public static void clearMemoryState(){
+    public static void clearMemoryState() {
         mQuantumMemory.clearMemoryState(mMemoryStateKeeper.getMemoryAddresses());
         mMemoryStateKeeper.clearMemoryState();
     }
