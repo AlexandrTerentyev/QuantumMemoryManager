@@ -1,8 +1,9 @@
 package kpfu.magistracy.controller.memory;
 
-import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
+import kpfu.magistracy.controller.execution.commands.PhysicalAddressingCommand;
+import kpfu.magistracy.controller.execution.results.LowLevelResult;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface QuantumMemory {
 
@@ -22,5 +23,5 @@ public interface QuantumMemory {
 
     boolean isMemoryAvailable();
 
-    void clearMemoryState(Collection<QuantumMemoryAddress> quantumMemoryAddresses);
+    List<LowLevelResult> perform(List<PhysicalAddressingCommand> physicalAddressingCommands);
 }
