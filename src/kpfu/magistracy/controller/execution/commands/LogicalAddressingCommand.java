@@ -2,7 +2,7 @@ package kpfu.magistracy.controller.execution.commands;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
-import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 
 public class LogicalAddressingCommand {
     @NotNull
@@ -12,13 +12,13 @@ public class LogicalAddressingCommand {
     private Double mCommandParam;
 
     @NotNull
-    private LogicalQubitAddress mFirstQubit_Part1;
+    private LogicalQubitAddressForController mFirstQubit_Part1;
     @NotNull
-    private LogicalQubitAddress mFirstQubit_Part2;
+    private LogicalQubitAddressForController mFirstQubit_Part2;
     @Nullable
-    private LogicalQubitAddress mSecondQubit_Part1;
+    private LogicalQubitAddressForController mSecondQubit_Part1;
     @Nullable
-    private LogicalQubitAddress mSecondQubit_Part2;
+    private LogicalQubitAddressForController mSecondQubit_Part2;
 
     public CommandTypes getCommandType() {
         return mCommandType;
@@ -28,19 +28,19 @@ public class LogicalAddressingCommand {
         return mCommandParam;
     }
 
-    public LogicalQubitAddress getFirstQubit_Part1() {
+    public LogicalQubitAddressForController getFirstQubit_Part1() {
         return mFirstQubit_Part1;
     }
 
-    public LogicalQubitAddress getFirstQubit_Part2() {
+    public LogicalQubitAddressForController getFirstQubit_Part2() {
         return mFirstQubit_Part2;
     }
 
-    public LogicalQubitAddress getSecondQubit_Part1() {
+    public LogicalQubitAddressForController getSecondQubit_Part1() {
         return mSecondQubit_Part1;
     }
 
-    public LogicalQubitAddress getSecondQubit_Part2() {
+    public LogicalQubitAddressForController getSecondQubit_Part2() {
         return mSecondQubit_Part2;
     }
 
@@ -62,22 +62,22 @@ public class LogicalAddressingCommand {
             return this;
         }
 
-        public Builder setFirstQubit_Part1(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setFirstQubit_Part1(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mFirstQubit_Part1 = qubitAddress;
             return this;
         }
 
-        public Builder setFirstQubit_Part2(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setFirstQubit_Part2(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mFirstQubit_Part2 = qubitAddress;
             return this;
         }
 
-        public Builder setSecondQubit_Part1(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setSecondQubit_Part1(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mSecondQubit_Part1 = qubitAddress;
             return this;
         }
 
-        public Builder setSecondQubit_Part2(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setSecondQubit_Part2(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mSecondQubit_Part2 = qubitAddress;
             return this;
         }

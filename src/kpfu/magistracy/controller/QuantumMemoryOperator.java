@@ -1,6 +1,6 @@
 package kpfu.magistracy.controller;
 
-import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 import kpfu.magistracy.controller.addresses.MemoryStateKeeper;
 import kpfu.magistracy.controller.execution.commands.LogicalAddressingCommand;
 import kpfu.magistracy.controller.execution.commands.PhysicalAddressingCommand;
@@ -31,13 +31,20 @@ public class QuantumMemoryOperator {
         mMemoryStateKeeper = new MemoryStateKeeper(mQuantumMemory);
     }
 
-    public QuantumMemoryOperator getOperator() {
+    public static QuantumMemoryOperator getOperator() {
         if (mQuantumMemoryOperator == null) {
             mQuantumMemoryOperator = new QuantumMemoryOperator();
         }
         return mQuantumMemoryOperator;
     }
 
+    public int getCommandsMaxCount(){
+        //todo
+        return 100;
+    }
+    public int getQubitsMaxCount(){
+        return mMemoryStateKeeper.getMaxQubitCount();
+    }
     private void clearMemoryState() {
         mMemoryStateKeeper.clearMemoryState();
     }
@@ -48,9 +55,9 @@ public class QuantumMemoryOperator {
         List<PhysicalAddressingCommand> physicalAddressingCommands = transformTopLevelCommandsToLowLevel(logicalCommands);
         List<LowLevelResult> lowLevelResults = mQuantumMemory.perform(physicalAddressingCommands);
 
-        Map<OwnerData, Map<LogicalQubitAddress, Boolean>> finalResults = new HashMap<OwnerData, Map<LogicalQubitAddress, Boolean>>();
+        Map<OwnerData, Map<LogicalQubitAddressForController, Boolean>> finalResults = new HashMap<OwnerData, Map<LogicalQubitAddress, Boolean>>();
         for (LowLevelResult lowLevelResult : lowLevelResults) {
-            LogicalQubitAddress logicalQubitAddress = mMemoryStateKeeper.getLogicalQubitAddressByPhysical(lowLevelResult.getGlobalQubitAddress());
+            LogicalQubitAddressForController logicalQubitAddress = mMemoryStateKeeper.getLogicalQubitAddressByPhysical(lowLevelResult.getGlobalQubitAddress());
 
             OwnerData ownerData = logicalQubitAddressOwnerDataMap.get(logicalQubitAddress);
             if (!finalResults.containsKey(ownerData)) {
