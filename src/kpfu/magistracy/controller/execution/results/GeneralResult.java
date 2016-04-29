@@ -1,6 +1,6 @@
 package kpfu.magistracy.controller.execution.results;
 
-import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,16 +11,16 @@ public class GeneralResult {
 
     private int mUserCommandNumber;
 
-    private Map<LogicalQubitAddress, Boolean> mMeasureResults;
+    private Map<LogicalQubitAddressForController, Boolean> mMeasureResults;
 
     public GeneralResult(long userId, int userCommandNumber) {
         mUserId = userId;
         mUserCommandNumber = userCommandNumber;
-        mMeasureResults = new HashMap<LogicalQubitAddress, Boolean>();
+        mMeasureResults = new HashMap<LogicalQubitAddressForController, Boolean>();
     }
 
-    public void addMeasureResult(LogicalQubitAddress logicalQubitAddress, Boolean result) {
-        mMeasureResults.put(logicalQubitAddress, result);
+    public void addMeasureResult(LogicalQubitAddressForController logicalQubitAddressForController, Boolean result) {
+        mMeasureResults.put(logicalQubitAddressForController, result);
     }
 
     public long getUserId() {

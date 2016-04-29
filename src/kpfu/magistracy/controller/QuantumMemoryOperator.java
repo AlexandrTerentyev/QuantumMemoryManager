@@ -1,6 +1,6 @@
 package kpfu.magistracy.controller;
 
-import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 import kpfu.magistracy.controller.addresses.MemoryStateKeeper;
 import kpfu.magistracy.controller.execution.TopLevelCommandKeeper;
 import kpfu.magistracy.controller.execution.commands.LogicalAddressingCommand;
@@ -29,13 +29,20 @@ public class QuantumMemoryOperator {
         mMemoryStateKeeper = new MemoryStateKeeper(mQuantumMemory);
     }
 
-    public QuantumMemoryOperator getOperator() {
+    public static QuantumMemoryOperator getOperator() {
         if (mQuantumMemoryOperator == null) {
             mQuantumMemoryOperator = new QuantumMemoryOperator();
         }
         return mQuantumMemoryOperator;
     }
 
+    public int getCommandsMaxCount(){
+        //todo
+        return 100;
+    }
+    public int getQubitsMaxCount(){
+        return mMemoryStateKeeper.getMaxQubitCount();
+    }
     private void clearMemoryState() {
         mMemoryStateKeeper.clearMemoryState();
     }
@@ -47,26 +54,26 @@ public class QuantumMemoryOperator {
         List<GeneralResult> finalResults = new ArrayList<GeneralResult>();
 
         for (LowLevelResult lowLevelResult : lowLevelResults) {
-            LogicalQubitAddress logicalQubitAddress = mMemoryStateKeeper.getLogicalQubitAddressByPhysical(lowLevelResult.getQuantumMemoryAddress());
-            addFinalResult(topLevelCommandCommandKeepers, finalResults, lowLevelResult, logicalQubitAddress);
+            LogicalQubitAddressForController logicalQubitAddressForController = mMemoryStateKeeper.getLogicalQubitAddressByPhysical(lowLevelResult.getQuantumMemoryAddress());
+            addFinalResult(topLevelCommandCommandKeepers, finalResults, lowLevelResult, logicalQubitAddressForController);
         }
         clearMemoryState();
         return finalResults;
     }
 
-    private void addFinalResult(List<TopLevelCommandKeeper> topLevelCommandCommandKeepers, List<GeneralResult> finalResults, LowLevelResult lowLevelResult, LogicalQubitAddress logicalQubitAddress) {
+    private void addFinalResult(List<TopLevelCommandKeeper> topLevelCommandCommandKeepers, List<GeneralResult> finalResults, LowLevelResult lowLevelResult, LogicalQubitAddressForController logicalQubitAddressForController) {
         for (TopLevelCommandKeeper topLevelCommandKeeper : topLevelCommandCommandKeepers) {
-            if (topLevelCommandKeeper.containsQubit(logicalQubitAddress)) {
+            if (topLevelCommandKeeper.containsQubit(logicalQubitAddressForController)) {
 
                 for (GeneralResult generalResult : finalResults) {
                     if (generalResult.getUserId() == topLevelCommandKeeper.getUserId() && generalResult.getUserCommandNumber() == topLevelCommandKeeper.getUserCommandNumber()) {
-                        generalResult.addMeasureResult(logicalQubitAddress, lowLevelResult.isZero());
+                        generalResult.addMeasureResult(logicalQubitAddressForController, lowLevelResult.isZero());
                         break;
                     }
                 }
 
                 GeneralResult generalResult = new GeneralResult(topLevelCommandKeeper.getUserId(), topLevelCommandKeeper.getUserCommandNumber());
-                generalResult.addMeasureResult(logicalQubitAddress, lowLevelResult.isZero());
+                generalResult.addMeasureResult(logicalQubitAddressForController, lowLevelResult.isZero());
                 finalResults.add(generalResult);
 
             }

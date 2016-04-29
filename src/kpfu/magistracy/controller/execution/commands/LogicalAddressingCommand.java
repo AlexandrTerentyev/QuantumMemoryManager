@@ -2,7 +2,7 @@ package kpfu.magistracy.controller.execution.commands;
 
 import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
-import kpfu.magistracy.controller.addresses.LogicalQubitAddress;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 
 public class LogicalAddressingCommand {
     @NotNull
@@ -12,11 +12,11 @@ public class LogicalAddressingCommand {
     private Double mCommandParam;
 
     @NotNull
-    private LogicalQubitAddress mQubit_1;
+    private LogicalQubitAddressForController mQubit_1;
     @NotNull
-    private LogicalQubitAddress mQubit_2;
+    private LogicalQubitAddressForController mQubit_2;
     @Nullable
-    private LogicalQubitAddress mQubit_3;
+    private LogicalQubitAddressForController mQubit_3;
 
     public CommandTypes getCommandType() {
         return mCommandType;
@@ -26,15 +26,15 @@ public class LogicalAddressingCommand {
         return mCommandParam;
     }
 
-    public LogicalQubitAddress getQubit_1() {
+    public LogicalQubitAddressForController getQubit_1() {
         return mQubit_1;
     }
 
-    public LogicalQubitAddress getQubit_2() {
+    public LogicalQubitAddressForController getQubit_2() {
         return mQubit_2;
     }
 
-    public LogicalQubitAddress getQubit_3() {
+    public LogicalQubitAddressForController getQubit_3() {
         return mQubit_3;
     }
 
@@ -56,17 +56,17 @@ public class LogicalAddressingCommand {
             return this;
         }
 
-        public Builder setFirstQubit(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setFirstQubit(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mQubit_1 = qubitAddress;
             return this;
         }
 
-        public Builder setSecondQubit(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setSecondQubit(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mQubit_2 = qubitAddress;
             return this;
         }
 
-        public Builder setThirdQubit(@NotNull LogicalQubitAddress qubitAddress) {
+        public Builder setThirdQubit(@NotNull LogicalQubitAddressForController qubitAddress) {
             logicalAddressingCommand.mQubit_3 = qubitAddress;
             return this;
         }

@@ -1,6 +1,7 @@
 package kpfu.magistracy.controller.addresses;
 
 import kpfu.magistracy.controller.memory.QuantumMemory;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
 
 import java.util.Collection;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public class MemoryStateKeeper {
 
-    private Map<QuantumMemoryAddress, LogicalQubitAddress> mMemoryAddresses;
+    private Map<QuantumMemoryAddress, LogicalQubitAddressForController> mMemoryAddresses;
 
     private QuantumMemory mQuantumMemory;
 
@@ -33,12 +34,12 @@ public class MemoryStateKeeper {
                 (quantumMemory.getMaxMemoryFrequency() - quantumMemory.getMinMemoryFrequency()) / quantumMemory.getFrequencyStep()
         );
 
-        mMemoryAddresses = new HashMap<QuantumMemoryAddress, LogicalQubitAddress>();
+        mMemoryAddresses = new HashMap<QuantumMemoryAddress, LogicalQubitAddressForController>();
         mFrequencyToUse = quantumMemory.getMinMemoryFrequency();
         mTimeToUse = 0L;
     }
 
-    public QuantumMemoryAddress createAddressForQubit(LogicalQubitAddress qubitLogicalAddress) {
+    public QuantumMemoryAddress createAddressForQubit(LogicalQubitAddressForController qubitLogicalAddress) {
         //// TODO: 27.04.2016 create address, using frequencyToUse and timeToUse
 
         if (mFrequencyToUse > mMaxFrequencyToUse || mTimeToUse > mMaxTimeToUse)
@@ -48,15 +49,19 @@ public class MemoryStateKeeper {
         return null;
     }
 
+    public int getMaxQubitCount() {
+        return mMaxQubitCount;
+    }
+
     public void clearMemoryState() {
-        mMemoryAddresses = new HashMap<QuantumMemoryAddress, LogicalQubitAddress>();
+        mMemoryAddresses = new HashMap<QuantumMemoryAddress, LogicalQubitAddressForController>();
     }
 
     public Collection<QuantumMemoryAddress> getMemoryAddresses() {
         return mMemoryAddresses.keySet();
     }
 
-    public LogicalQubitAddress getLogicalQubitAddressByPhysical(QuantumMemoryAddress quantumMemoryAddress) {
+    public LogicalQubitAddressForController getLogicalQubitAddressByPhysical(QuantumMemoryAddress quantumMemoryAddress) {
         return mMemoryAddresses.get(quantumMemoryAddress);
     }
 }

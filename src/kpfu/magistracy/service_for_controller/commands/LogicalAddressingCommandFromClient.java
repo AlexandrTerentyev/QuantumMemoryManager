@@ -1,6 +1,7 @@
-package kpfu.magistracy.service_for_controller;
+package kpfu.magistracy.service_for_controller.commands;
 
 import kpfu.magistracy.controller.execution.commands.CommandTypes;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressFromClient;
 
 
 public class LogicalAddressingCommandFromClient {
