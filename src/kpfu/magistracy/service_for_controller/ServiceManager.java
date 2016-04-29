@@ -76,11 +76,11 @@ public class ServiceManager {
                 commandBuilder
                         .setCommand(commandFromClient.getCommandType())
                         .setCommandParam(commandFromClient.getCommandParam())
-                        .setFirstQubit(addressesForController.get(0))
-                        .setSecondQubit(addressesForController.get(1));
+                        .setFirstQubit_Part1(addressesForController.get(0))
+                        .setFirstQubit_Part2(addressesForController.get(1));
                 if (commandFromClient.getCommandType() == CommandTypes.CQET) {
-                    commandBuilder.setThirdQubit(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(0));
-                    commandBuilder.setForthQubit(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(1));
+                    commandBuilder.setSecondQubit_Part1(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(0));
+                    commandBuilder.setSecondQubit_Part2(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(1));
                 }
                 commandsListForController.add(commandBuilder.build());
             }
