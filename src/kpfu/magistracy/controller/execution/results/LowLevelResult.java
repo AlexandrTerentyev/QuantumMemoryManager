@@ -1,20 +1,21 @@
 package kpfu.magistracy.controller.execution.results;
 
-import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
+import kpfu.magistracy.controller.addresses.GlobalQubitAddress;
 
 public class LowLevelResult {
 
-    private QuantumMemoryAddress mQuantumMemoryAddress;
+
+    private GlobalQubitAddress mGlobalQubitAddress;
 
     private boolean mMeasureResult;
 
-    public LowLevelResult(QuantumMemoryAddress quantumMemoryAddress, boolean measureResult) {
-        this.mQuantumMemoryAddress = quantumMemoryAddress;
+    public LowLevelResult(GlobalQubitAddress globalQubitAddress, boolean measureResult) {
+        this.mGlobalQubitAddress = globalQubitAddress;
         this.mMeasureResult = measureResult;
     }
 
-    public QuantumMemoryAddress getQuantumMemoryAddress() {
-        return mQuantumMemoryAddress;
+    public GlobalQubitAddress getGlobalQubitAddress() {
+        return mGlobalQubitAddress;
     }
 
     public boolean isZero() {

@@ -12,11 +12,13 @@ public class LogicalAddressingCommand {
     private Double mCommandParam;
 
     @NotNull
-    private LogicalQubitAddress mQubit_1;
+    private LogicalQubitAddress mFirstQubit_Part1;
     @NotNull
-    private LogicalQubitAddress mQubit_2;
+    private LogicalQubitAddress mFirstQubit_Part2;
     @Nullable
-    private LogicalQubitAddress mQubit_3;
+    private LogicalQubitAddress mSecondQubit_Part1;
+    @Nullable
+    private LogicalQubitAddress mSecondQubit_Part2;
 
     public CommandTypes getCommandType() {
         return mCommandType;
@@ -26,16 +28,20 @@ public class LogicalAddressingCommand {
         return mCommandParam;
     }
 
-    public LogicalQubitAddress getQubit_1() {
-        return mQubit_1;
+    public LogicalQubitAddress getFirstQubit_Part1() {
+        return mFirstQubit_Part1;
     }
 
-    public LogicalQubitAddress getQubit_2() {
-        return mQubit_2;
+    public LogicalQubitAddress getFirstQubit_Part2() {
+        return mFirstQubit_Part2;
     }
 
-    public LogicalQubitAddress getQubit_3() {
-        return mQubit_3;
+    public LogicalQubitAddress getSecondQubit_Part1() {
+        return mSecondQubit_Part1;
+    }
+
+    public LogicalQubitAddress getSecondQubit_Part2() {
+        return mSecondQubit_Part2;
     }
 
     public static class Builder {
@@ -56,18 +62,23 @@ public class LogicalAddressingCommand {
             return this;
         }
 
-        public Builder setFirstQubit(@NotNull LogicalQubitAddress qubitAddress) {
-            logicalAddressingCommand.mQubit_1 = qubitAddress;
+        public Builder setFirstQubit_Part1(@NotNull LogicalQubitAddress qubitAddress) {
+            logicalAddressingCommand.mFirstQubit_Part1 = qubitAddress;
             return this;
         }
 
-        public Builder setSecondQubit(@NotNull LogicalQubitAddress qubitAddress) {
-            logicalAddressingCommand.mQubit_2 = qubitAddress;
+        public Builder setFirstQubit_Part2(@NotNull LogicalQubitAddress qubitAddress) {
+            logicalAddressingCommand.mFirstQubit_Part2 = qubitAddress;
             return this;
         }
 
-        public Builder setThirdQubit(@NotNull LogicalQubitAddress qubitAddress) {
-            logicalAddressingCommand.mQubit_3 = qubitAddress;
+        public Builder setSecondQubit_Part1(@NotNull LogicalQubitAddress qubitAddress) {
+            logicalAddressingCommand.mSecondQubit_Part1 = qubitAddress;
+            return this;
+        }
+
+        public Builder setSecondQubit_Part2(@NotNull LogicalQubitAddress qubitAddress) {
+            logicalAddressingCommand.mSecondQubit_Part2 = qubitAddress;
             return this;
         }
 

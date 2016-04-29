@@ -1,16 +1,24 @@
 package kpfu.magistracy.controller.execution.commands;
 
-import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
+import com.sun.istack.internal.NotNull;
+import com.sun.istack.internal.Nullable;
+import kpfu.magistracy.controller.addresses.GlobalQubitAddress;
 
 public class PhysicalAddressingCommand {
-
+    @NotNull
     private CommandTypes mCommandType;
 
+    @NotNull
     private Double mCommandParam;
 
-    private QuantumMemoryAddress mQubit_1;
-    private QuantumMemoryAddress mQubit_2;
-    private QuantumMemoryAddress mQubit_3;
+    @NotNull
+    private GlobalQubitAddress mFirstQubit_Part1;
+    @NotNull
+    private GlobalQubitAddress mFirstQubit_Part2;
+    @Nullable
+    private GlobalQubitAddress mSecondQubit_Part1;
+    @Nullable
+    private GlobalQubitAddress mSecondQubit_Part2;
 
     public CommandTypes getCommandType() {
         return mCommandType;
@@ -20,16 +28,20 @@ public class PhysicalAddressingCommand {
         return mCommandParam;
     }
 
-    public QuantumMemoryAddress getQubit_1() {
-        return mQubit_1;
+    public GlobalQubitAddress getFirstQubit_Part1() {
+        return mFirstQubit_Part1;
     }
 
-    public QuantumMemoryAddress getQubit_2() {
-        return mQubit_2;
+    public GlobalQubitAddress getFirstQubit_Part2() {
+        return mFirstQubit_Part2;
     }
 
-    public QuantumMemoryAddress getQubit_3() {
-        return mQubit_3;
+    public GlobalQubitAddress getSecondQubit_Part1() {
+        return mSecondQubit_Part1;
+    }
+
+    public GlobalQubitAddress getSecondQubit_Part2() {
+        return mSecondQubit_Part2;
     }
 
     public static class Builder {
@@ -50,18 +62,23 @@ public class PhysicalAddressingCommand {
             return this;
         }
 
-        public PhysicalAddressingCommand.Builder setFirstQubit(QuantumMemoryAddress qubitAddress) {
-            physicalAddressingCommand.mQubit_1 = qubitAddress;
+        public PhysicalAddressingCommand.Builder setFirstQubit_Part1(GlobalQubitAddress qubitAddress) {
+            physicalAddressingCommand.mFirstQubit_Part1 = qubitAddress;
             return this;
         }
 
-        public PhysicalAddressingCommand.Builder setSecondQubit(QuantumMemoryAddress qubitAddress) {
-            physicalAddressingCommand.mQubit_2 = qubitAddress;
+        public PhysicalAddressingCommand.Builder setFirstQubit_Part2(GlobalQubitAddress qubitAddress) {
+            physicalAddressingCommand.mFirstQubit_Part2 = qubitAddress;
             return this;
         }
 
-        public PhysicalAddressingCommand.Builder setThirdQubit(QuantumMemoryAddress qubitAddress) {
-            physicalAddressingCommand.mQubit_3 = qubitAddress;
+        public PhysicalAddressingCommand.Builder setSecondQubit_Part1(GlobalQubitAddress qubitAddress) {
+            physicalAddressingCommand.mSecondQubit_Part1 = qubitAddress;
+            return this;
+        }
+
+        public PhysicalAddressingCommand.Builder setSecondQubit_Part2(GlobalQubitAddress qubitAddress) {
+            physicalAddressingCommand.mSecondQubit_Part2 = qubitAddress;
             return this;
         }
 
