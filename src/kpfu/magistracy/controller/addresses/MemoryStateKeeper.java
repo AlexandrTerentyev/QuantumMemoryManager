@@ -2,15 +2,14 @@ package kpfu.magistracy.controller.addresses;
 
 import kpfu.magistracy.controller.memory.QuantumMemory;
 import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
-import kpfu.terentyev.quantum.api.KazanModel.QuantumMemoryAddress;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MemoryStateKeeper {
 
     private Map<GlobalQubitAddress, LogicalQubitAddressForController> mMemoryAddresses;
+
+    private Set<GlobalQubitAddress> initializedQubits;
 
     private QuantumMemory mQuantumMemory;
 
@@ -35,6 +34,8 @@ public class MemoryStateKeeper {
         );
 
         mMemoryAddresses = new HashMap<GlobalQubitAddress, LogicalQubitAddressForController>();
+        initializedQubits = new HashSet<GlobalQubitAddress>();
+
         mFrequencyToUse = quantumMemory.getMinMemoryFrequency();
         mTimeToUse = 0L;
     }
@@ -49,12 +50,20 @@ public class MemoryStateKeeper {
         return null;
     }
 
+    public boolean needInitializeLogicalQubit(GlobalQubitAddress qubitPart_1, GlobalQubitAddress qubitPart_2) {
+        if (initializedQubits.contains(qubitPart_1) && initializedQubits.contains(qubitPart_2)) return false;
+        if (initializedQubits.contains(qubitPart_1) && !initializedQubits.contains(qubitPart_2) || !initializedQubits.contains(qubitPart_1) && initializedQubits.contains(qubitPart_2))
+            throw new IllegalStateException("Qubits cannot be initialize partially");
+        return true;
+    }
+
     public int getMaxQubitCount() {
         return mMaxQubitCount;
     }
 
     public void clearMemoryState() {
-        mMemoryAddresses = new HashMap<GlobalQubitAddress, LogicalQubitAddress>();
+        mMemoryAddresses.clear();
+        initializedQubits.clear();
     }
 
     public Collection<GlobalQubitAddress> getMemoryAddresses() {

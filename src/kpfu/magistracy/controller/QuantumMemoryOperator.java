@@ -1,7 +1,9 @@
 package kpfu.magistracy.controller;
 
 import kpfu.magistracy.controller.addresses.MemoryStateKeeper;
+import kpfu.magistracy.controller.execution.commands.InitCommand;
 import kpfu.magistracy.controller.execution.commands.LogicalAddressingCommand;
+import kpfu.magistracy.controller.execution.commands.MeasureCommand;
 import kpfu.magistracy.controller.execution.commands.PhysicalAddressingCommand;
 import kpfu.magistracy.controller.execution.results.LowLevelResult;
 import kpfu.magistracy.controller.memory.EmulatedQuantumMemory;
@@ -29,6 +31,8 @@ public class QuantumMemoryOperator {
         //todo initialize real memory or emulator
         mQuantumMemory = new EmulatedQuantumMemory();
         mMemoryStateKeeper = new MemoryStateKeeper(mQuantumMemory);
+        logicalQubitAddressOwnerDataMap = new HashMap<LogicalQubitAddressForController, OwnerData>();
+
     }
 
     public static QuantumMemoryOperator getOperator() {
@@ -38,19 +42,21 @@ public class QuantumMemoryOperator {
         return mQuantumMemoryOperator;
     }
 
-    public int getCommandsMaxCount(){
+    public int getCommandsMaxCount() {
         //todo
         return 100;
     }
-    public int getQubitsMaxCount(){
+
+    public int getQubitsMaxCount() {
         return mMemoryStateKeeper.getMaxQubitCount();
     }
+
     private void clearMemoryState() {
         mMemoryStateKeeper.clearMemoryState();
     }
 
     public synchronized Map<OwnerData, Map<LogicalQubitAddressForController, Boolean>> executeCommands(Map<OwnerData, List<LogicalAddressingCommand>> logicalCommands) {
-        logicalQubitAddressOwnerDataMap = new HashMap<LogicalQubitAddressForController, OwnerData>();
+        logicalQubitAddressOwnerDataMap.clear();
 
         List<PhysicalAddressingCommand> physicalAddressingCommands = transformTopLevelCommandsToLowLevel(logicalCommands);
         List<LowLevelResult> lowLevelResults = mQuantumMemory.perform(physicalAddressingCommands);
@@ -74,9 +80,14 @@ public class QuantumMemoryOperator {
     }
 
     private List<PhysicalAddressingCommand> transformTopLevelCommandsToLowLevel(Map<OwnerData, List<LogicalAddressingCommand>> logicalCommands) {
+        //todo write comments for method body
+
         List<PhysicalAddressingCommand> physicalAddressingCommands = new ArrayList<PhysicalAddressingCommand>();
+
+        List<PhysicalAddressingCommand> tempList = new ArrayList<PhysicalAddressingCommand>();
         for (Map.Entry<OwnerData, List<LogicalAddressingCommand>> commandEntry : logicalCommands.entrySet()) {
             for (LogicalAddressingCommand logicalAddressingCommand : commandEntry.getValue()) {
+
                 if (!logicalQubitAddressOwnerDataMap.containsKey(logicalAddressingCommand.getFirstQubit_Part1())) {
                     logicalQubitAddressOwnerDataMap.put(logicalAddressingCommand.getFirstQubit_Part1(), commandEntry.getKey());
                 }
@@ -93,16 +104,33 @@ public class QuantumMemoryOperator {
                         .setCommandParam(logicalAddressingCommand.getCommandParam())
                         .setFirstQubit_Part1(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getFirstQubit_Part1()))
                         .setFirstQubit_Part2(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getFirstQubit_Part2()));
-                if (logicalAddressingCommand.getSecondQubit_Part1() != null) {
-                    physicalAddressingCommandBuilder.setSecondQubit_Part1(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part1()));
-                    if (logicalAddressingCommand.getSecondQubit_Part2() != null) {
-                        physicalAddressingCommandBuilder.setSecondQubit_Part2(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part2()));
+
+                if (!logicalAddressingCommand.isSecondLogicalQubitNull()) {
+                    physicalAddressingCommandBuilder
+                            .setSecondQubit_Part1(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part1()))
+                            .setSecondQubit_Part2(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part2()));
+                }
+                PhysicalAddressingCommand physicalAddressingCommand = physicalAddressingCommandBuilder.build();
+                if (mMemoryStateKeeper.needInitializeLogicalQubit(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2())) {
+                    tempList.add(new InitCommand(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2()));
+                }
+                if (!logicalAddressingCommand.isSecondLogicalQubitNull()) {
+                    if (mMemoryStateKeeper.needInitializeLogicalQubit(physicalAddressingCommand.getSecondQubit_Part1(), physicalAddressingCommand.getSecondQubit_Part2())) {
+                        tempList.add(new InitCommand(physicalAddressingCommand.getSecondQubit_Part1(), physicalAddressingCommand.getSecondQubit_Part2()));
                     }
                 }
-                //todo add init commands
-                physicalAddressingCommands.add(physicalAddressingCommandBuilder.build());
+                tempList.add(physicalAddressingCommand);
             }
-            //todo add measure commands
+            physicalAddressingCommands.addAll(tempList);
+            for (PhysicalAddressingCommand physicalAddressingCommand : tempList) {
+                physicalAddressingCommands.add(new MeasureCommand(physicalAddressingCommand.getFirstQubit_Part1()));
+                physicalAddressingCommands.add(new MeasureCommand(physicalAddressingCommand.getFirstQubit_Part2()));
+
+                if (!physicalAddressingCommand.isSecondLogicalQubitNull()) {
+                    physicalAddressingCommands.add(new MeasureCommand(physicalAddressingCommand.getSecondQubit_Part1()));
+                    physicalAddressingCommands.add(new MeasureCommand(physicalAddressingCommand.getSecondQubit_Part2()));
+                }
+            }
             mMemoryStateKeeper.clearMemoryState();
         }
         return physicalAddressingCommands;
