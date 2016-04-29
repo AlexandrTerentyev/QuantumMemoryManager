@@ -1,6 +1,5 @@
 package kpfu.magistracy.controller;
 
-import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 import kpfu.magistracy.controller.addresses.MemoryStateKeeper;
 import kpfu.magistracy.controller.execution.commands.LogicalAddressingCommand;
 import kpfu.magistracy.controller.execution.commands.PhysicalAddressingCommand;
@@ -8,6 +7,7 @@ import kpfu.magistracy.controller.execution.results.LowLevelResult;
 import kpfu.magistracy.controller.memory.EmulatedQuantumMemory;
 import kpfu.magistracy.controller.memory.QuantumMemory;
 import kpfu.magistracy.service_for_controller.OwnerData;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +22,7 @@ public class QuantumMemoryOperator {
 
     private MemoryStateKeeper mMemoryStateKeeper;
 
-    private Map<LogicalQubitAddress, OwnerData> logicalQubitAddressOwnerDataMap;
+    private Map<LogicalQubitAddressForController, OwnerData> logicalQubitAddressOwnerDataMap;
 
 
     private QuantumMemoryOperator() {
@@ -49,19 +49,19 @@ public class QuantumMemoryOperator {
         mMemoryStateKeeper.clearMemoryState();
     }
 
-    public synchronized Map<OwnerData, Map<LogicalQubitAddress, Boolean>> executeCommands(Map<OwnerData, List<LogicalAddressingCommand>> logicalCommands) {
-        logicalQubitAddressOwnerDataMap = new HashMap<LogicalQubitAddress, OwnerData>();
+    public synchronized Map<OwnerData, Map<LogicalQubitAddressForController, Boolean>> executeCommands(Map<OwnerData, List<LogicalAddressingCommand>> logicalCommands) {
+        logicalQubitAddressOwnerDataMap = new HashMap<LogicalQubitAddressForController, OwnerData>();
 
         List<PhysicalAddressingCommand> physicalAddressingCommands = transformTopLevelCommandsToLowLevel(logicalCommands);
         List<LowLevelResult> lowLevelResults = mQuantumMemory.perform(physicalAddressingCommands);
 
-        Map<OwnerData, Map<LogicalQubitAddressForController, Boolean>> finalResults = new HashMap<OwnerData, Map<LogicalQubitAddress, Boolean>>();
+        Map<OwnerData, Map<LogicalQubitAddressForController, Boolean>> finalResults = new HashMap<OwnerData, Map<LogicalQubitAddressForController, Boolean>>();
         for (LowLevelResult lowLevelResult : lowLevelResults) {
             LogicalQubitAddressForController logicalQubitAddress = mMemoryStateKeeper.getLogicalQubitAddressByPhysical(lowLevelResult.getGlobalQubitAddress());
 
             OwnerData ownerData = logicalQubitAddressOwnerDataMap.get(logicalQubitAddress);
             if (!finalResults.containsKey(ownerData)) {
-                Map<LogicalQubitAddress, Boolean> measureResultMap = new HashMap<LogicalQubitAddress, Boolean>();
+                Map<LogicalQubitAddressForController, Boolean> measureResultMap = new HashMap<LogicalQubitAddressForController, Boolean>();
                 measureResultMap.put(logicalQubitAddress, lowLevelResult.isZero());
                 finalResults.put(ownerData, measureResultMap);
             } else {
