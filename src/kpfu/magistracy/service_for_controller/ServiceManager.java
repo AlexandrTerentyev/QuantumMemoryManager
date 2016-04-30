@@ -42,7 +42,7 @@ public class ServiceManager {
     public void putCommandsToExecutionQueue(String userId, String commandsString) {
         try {
             OwnerData ownerData = new OwnerData(userId, System.currentTimeMillis());
-            List<LogicalAddressingCommand> commandsListForController = checkCommands(ownerData, commandsString);
+            List<LogicalAddressingCommand> commandsListForController = checkCommandsAndTrasformForController(ownerData, commandsString);
             mCommandsForControllerMap.put(ownerData, commandsListForController);
             mOwnerDataList.add(ownerData);
             executeNextCommand();
@@ -51,7 +51,7 @@ public class ServiceManager {
         }
     }
 
-    private List<LogicalAddressingCommand> checkCommands(OwnerData ownerData, String commandsString) throws IllegalArgumentException {
+    private List<LogicalAddressingCommand> checkCommandsAndTrasformForController(OwnerData ownerData, String commandsString) throws IllegalArgumentException {
         CommandsFromClientDTO commandsFromClientDTO;
         try {
             commandsFromClientDTO = new Gson().fromJson(commandsString, CommandsFromClientDTO.class);
@@ -64,7 +64,7 @@ public class ServiceManager {
         }
         List<LogicalAddressingCommand> commandsListForController = new LinkedList<LogicalAddressingCommand>();
         for (LogicalAddressingCommandFromClient commandFromClient : commandsFromClientList) {
-            if (!checkCommand(commandFromClient)) {
+            if (!commandComposedRight(commandFromClient)) {
                 throw new IllegalArgumentException(exceptionStringJsonIsNotValid);
             } else {
                 commandFromClient.getQubit_1().setOwnerData(ownerData);
@@ -79,8 +79,9 @@ public class ServiceManager {
                         .setFirstQubit_Part1(addressesForController.get(0))
                         .setFirstQubit_Part2(addressesForController.get(1));
                 if (commandFromClient.getCommandType() == CommandTypes.CQET) {
-                    commandBuilder.setSecondQubit_Part1(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(0));
-                    commandBuilder.setSecondQubit_Part2(getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2()).get(1));
+                    addressesForController = getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_2());
+                    commandBuilder.setSecondQubit_Part1(addressesForController.get(0));
+                    commandBuilder.setSecondQubit_Part2(addressesForController.get(1));
                 }
                 commandsListForController.add(commandBuilder.build());
             }
@@ -88,7 +89,7 @@ public class ServiceManager {
         return commandsListForController;
     }
 
-    private boolean checkCommand(LogicalAddressingCommandFromClient commandFromClient) {
+    private boolean commandComposedRight(LogicalAddressingCommandFromClient commandFromClient) {
         if (commandFromClient.getQubit_1() == null) {
             return false;
         } else if (commandFromClient.getCommandType() == CommandTypes.CQET && commandFromClient.getQubit_2() == null) {
@@ -155,6 +156,7 @@ public class ServiceManager {
                                         oneLoqicalQubitResult = new TopLevelResult();
                                         measureResultsWithClientAddresses.put(logicalQubitAddressFromClient, oneLoqicalQubitResult);
                                     }
+                                    //todo проверить: сначала положил в мар, потом изменяю значение полей одного из значений
                                     if (logicalQubitAddressForController.getMemoryPart() == 0) {
                                         oneLoqicalQubitResult.setQubit_1MeasureResult(measureResultsWithLogicalAddresses.get(logicalQubitAddressForController));
                                     } else {

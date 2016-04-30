@@ -1,13 +1,16 @@
 package kpfu.magistracy.service_for_controller.addresses;
 
 
+import com.google.gson.annotations.SerializedName;
 import kpfu.magistracy.service_for_controller.OwnerData;
 
 public class LogicalQubitAddressFromClient {
 
-    OwnerData mOwnerData;
     //локальный порядковый номер кубита в программе клиента
+    @SerializedName("local_id")
     int mLogicalQubitAddress;
+    //data not from a client
+    OwnerData mOwnerData;
 
     public int getLogicalQubitAddress() {
         return mLogicalQubitAddress;
