@@ -5,6 +5,9 @@ import kpfu.magistracy.controller.execution.results.LowLevelResult;
 
 import java.util.List;
 
+/**
+ * Interface for classes, which should operate like quantum memory
+ */
 public interface QuantumMemory {
 
     long getMaxMemoryFrequency();

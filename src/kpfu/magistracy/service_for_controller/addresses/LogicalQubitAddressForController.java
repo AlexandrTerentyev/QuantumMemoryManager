@@ -29,4 +29,8 @@ public class LogicalQubitAddressForController {
 
     }
 
+    @Override
+    public String toString() {
+        return "globalId = " + globalId + ", memoryPart = " + memoryPart;
+    }
 }

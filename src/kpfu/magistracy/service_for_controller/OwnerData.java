@@ -3,9 +3,9 @@ package kpfu.magistracy.service_for_controller;
 
 public class OwnerData {
 
-    protected String userId;
+    private String userId;
     //time, when user's commands list was transformed
-    protected long timeStamp;
+    private long timeStamp;
 
     public OwnerData(String userId, long timeStamp) {
         this.userId = userId;
@@ -25,8 +25,12 @@ public class OwnerData {
 
         OwnerData that = (OwnerData) o;
 
-        return getUserId() == that.getUserId() && getTimeStamp() == that.getTimeStamp();
+        return getUserId().equals(that.getUserId()) && getTimeStamp() == that.getTimeStamp();
 
     }
 
+    @Override
+    public String toString() {
+        return "UserId = " + userId + ", timeStamp = " + timeStamp;
+    }
 }
