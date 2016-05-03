@@ -1,20 +1,26 @@
 package com.company;
 
+import com.google.gson.GsonBuilder;
 import kpfu.magistracy.controller.QuantumMemoryOperator;
 import kpfu.magistracy.controller.execution.commands.CommandTypes;
 import kpfu.magistracy.controller.execution.commands.LogicalAddressingCommand;
 import kpfu.magistracy.service_for_controller.OwnerData;
+import kpfu.magistracy.service_for_controller.ServiceManager;
 import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressForController;
+import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressFromClient;
+import kpfu.magistracy.service_for_controller.commands.CommandsFromClientDTO;
+import kpfu.magistracy.service_for_controller.commands.LogicalAddressingCommandFromClient;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
+        //testController();
+        testWholeCycle();
+    }
 
+    private static void testController() {
         OwnerData ownerData1 = new OwnerData("1", System.currentTimeMillis());
         OwnerData ownerData2 = new OwnerData("2", System.currentTimeMillis());
 
@@ -40,5 +46,19 @@ public class Main {
                 System.out.println("OwnerData = " + mapEntry.getKey() + ", LogicalAddress = " + innerEntry.getKey() + ", Value = " + innerEntry.getValue());
             }
         }
+    }
+
+    public static void testWholeCycle() {
+        ServiceManager serviceManager = ServiceManager.getServiceManager();
+        CommandsFromClientDTO commandsFromClientDTO = new CommandsFromClientDTO();
+        commandsFromClientDTO.setQubitCount(1);
+        List<LogicalAddressingCommandFromClient> commandFromClientList = new LinkedList<LogicalAddressingCommandFromClient>();
+        commandFromClientList.add(new LogicalAddressingCommandFromClient(
+                CommandTypes.PHASE,
+                Math.PI,
+                new LogicalQubitAddressFromClient(1))
+        );
+        commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
+        serviceManager.putCommandsToExecutionQueue("1", new GsonBuilder().create().toJson(commandsFromClientDTO));
     }
 }

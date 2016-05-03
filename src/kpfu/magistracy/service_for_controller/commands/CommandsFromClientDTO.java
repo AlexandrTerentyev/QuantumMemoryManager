@@ -19,4 +19,12 @@ public class CommandsFromClientDTO {
     public List<LogicalAddressingCommandFromClient> getLogicalAddressingCommandFromClientList() {
         return mLogicalAddressingCommandFromClientList;
     }
+
+    public void setQubitCount(Integer qubitCount) {
+        mQubitCount = qubitCount;
+    }
+
+    public void setLogicalAddressingCommandFromClientList(List<LogicalAddressingCommandFromClient> logicalAddressingCommandFromClientList) {
+        mLogicalAddressingCommandFromClientList = logicalAddressingCommandFromClientList;
+    }
 }

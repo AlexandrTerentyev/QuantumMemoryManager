@@ -12,6 +12,10 @@ public class LogicalQubitAddressFromClient {
     //data not from a client
     OwnerData mOwnerData;
 
+    public LogicalQubitAddressFromClient(int logicalQubitAddress) {
+        mLogicalQubitAddress = logicalQubitAddress;
+    }
+
     public int getLogicalQubitAddress() {
         return mLogicalQubitAddress;
     }

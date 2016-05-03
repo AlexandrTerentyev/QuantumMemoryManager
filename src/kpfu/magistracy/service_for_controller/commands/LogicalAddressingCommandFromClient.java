@@ -31,4 +31,16 @@ public class LogicalAddressingCommandFromClient {
         return mQubit_2;
     }
 
+    public LogicalAddressingCommandFromClient(CommandTypes commandType, Double commandParam, LogicalQubitAddressFromClient qubit_1, LogicalQubitAddressFromClient qubit_2) {
+        mCommandType = commandType;
+        mCommandParam = commandParam;
+        mQubit_1 = qubit_1;
+        mQubit_2 = qubit_2;
+    }
+
+    public LogicalAddressingCommandFromClient(CommandTypes commandType, Double commandParam, LogicalQubitAddressFromClient qubit_1) {
+        mCommandType = commandType;
+        mCommandParam = commandParam;
+        mQubit_1 = qubit_1;
+    }
 }

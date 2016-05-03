@@ -28,6 +28,7 @@ public class ServiceManager {
 
     private ServiceManager() {
         mCommandsForControllerMap = new HashMap<OwnerData, List<LogicalAddressingCommand>>();
+        addressesCorrespondenceMap = new LinkedHashMap<LogicalQubitAddressForController, LogicalQubitAddressFromClient>();
         mOwnerDataList = new LinkedList<OwnerData>();
         mQuantumMemoryOperator = QuantumMemoryOperator.getOperator();
     }
@@ -42,7 +43,7 @@ public class ServiceManager {
     public void putCommandsToExecutionQueue(String userId, String commandsString) {
         try {
             OwnerData ownerData = new OwnerData(userId, System.currentTimeMillis());
-            List<LogicalAddressingCommand> commandsListForController = checkCommandsAndTrasformForController(ownerData, commandsString);
+            List<LogicalAddressingCommand> commandsListForController = checkCommandsAndTransformForController(ownerData, commandsString);
             mCommandsForControllerMap.put(ownerData, commandsListForController);
             mOwnerDataList.add(ownerData);
             executeNextCommand();
@@ -51,7 +52,7 @@ public class ServiceManager {
         }
     }
 
-    private List<LogicalAddressingCommand> checkCommandsAndTrasformForController(OwnerData ownerData, String commandsString) throws IllegalArgumentException {
+    private List<LogicalAddressingCommand> checkCommandsAndTransformForController(OwnerData ownerData, String commandsString) throws IllegalArgumentException {
         CommandsFromClientDTO commandsFromClientDTO;
         try {
             commandsFromClientDTO = new Gson().fromJson(commandsString, CommandsFromClientDTO.class);
@@ -110,7 +111,7 @@ public class ServiceManager {
         return addressesForController;
     }
 
-    public List<LogicalQubitAddressForController> getGlobalLogicalQubitAddressFromLocalClient(LogicalQubitAddressFromClient qubitAddressFromClient) {
+    private List<LogicalQubitAddressForController> getGlobalLogicalQubitAddressFromLocalClient(LogicalQubitAddressFromClient qubitAddressFromClient) {
         List<LogicalQubitAddressForController> logicalQubitAddressForControllers = new LinkedList<LogicalQubitAddressForController>();
         for (LogicalQubitAddressForController key : addressesCorrespondenceMap.keySet()) {
             if (addressesCorrespondenceMap.get(key).equals(qubitAddressFromClient)) {
@@ -175,6 +176,7 @@ public class ServiceManager {
                                     //оба физических кубита дали при измерении 0 или 1 - ошибка
                                 }
                             }
+                            printResults(ownerData, resultsForSending);
                             //todo вернуть пользователю по socket с помощью OwnerData
                             mCommandsForControllerMap.remove(ownerData);
                             mOwnerDataList.remove(ownerData);
@@ -185,6 +187,14 @@ public class ServiceManager {
                     threadForCommandsExecuting = null;
                 }
             });
+            threadForCommandsExecuting.run();
+        }
+    }
+
+    private void printResults(OwnerData ownerData, LinkedHashMap<LogicalQubitAddressFromClient, Integer> results) {
+        System.out.println("UserId = " + ownerData.getUserId());
+        for (LogicalQubitAddressFromClient addressFromClient : results.keySet()) {
+            System.out.println("AddressFromClient = " + addressFromClient.getLogicalQubitAddress() + " , result = " + results.get(addressFromClient));
         }
     }
 }
