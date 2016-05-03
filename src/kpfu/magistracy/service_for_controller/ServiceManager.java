@@ -182,8 +182,6 @@ public class ServiceManager {
                             mOwnerDataList.remove(ownerData);
                         }
                     }
-                    //todo проверить
-                    threadForCommandsExecuting.interrupt();
                     threadForCommandsExecuting = null;
                 }
             });

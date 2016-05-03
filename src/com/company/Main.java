@@ -58,7 +58,22 @@ public class Main {
                 Math.PI,
                 new LogicalQubitAddressFromClient(1))
         );
+        commandFromClientList.add(new LogicalAddressingCommandFromClient(
+                CommandTypes.QET,
+                Math.PI / 2,
+                new LogicalQubitAddressFromClient(1))
+        );
         commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
         serviceManager.putCommandsToExecutionQueue("1", new GsonBuilder().create().toJson(commandsFromClientDTO));
+        commandsFromClientDTO = new CommandsFromClientDTO();
+        commandsFromClientDTO.setQubitCount(1);
+        commandFromClientList = new LinkedList<LogicalAddressingCommandFromClient>();
+        commandFromClientList.add(new LogicalAddressingCommandFromClient(
+                CommandTypes.PHASE,
+                0.5,
+                new LogicalQubitAddressFromClient(1))
+        );
+        commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
+        serviceManager.putCommandsToExecutionQueue("2", new GsonBuilder().create().toJson(commandsFromClientDTO));
     }
 }
