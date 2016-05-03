@@ -1,8 +1,10 @@
 package kpfu.magistracy.service_for_controller.addresses;
 
+
 public class LogicalQubitAddressForController {
 
     private long globalId;
+    //0 or 1
     private int memoryPart;
 
     public LogicalQubitAddressForController(long globalId, int memoryPart) {

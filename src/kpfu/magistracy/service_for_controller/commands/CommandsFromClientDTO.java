@@ -6,9 +6,10 @@ import java.util.List;
 
 public class CommandsFromClientDTO {
 
+    //qubits count, used to execute all commands
     @SerializedName("qubit_count")
     private Integer mQubitCount;
-
+    //list of commands from user, in which used logical qubits
     @SerializedName("commands")
     private List<LogicalAddressingCommandFromClient> mLogicalAddressingCommandFromClientList;
 

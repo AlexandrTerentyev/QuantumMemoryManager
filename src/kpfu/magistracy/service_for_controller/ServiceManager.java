@@ -21,37 +21,50 @@ public class ServiceManager {
 
     private static ServiceManager mServiceManager;
     private QuantumMemoryOperator mQuantumMemoryOperator;
+    //map for saving all commands list from all users
     private HashMap<OwnerData, List<LogicalAddressingCommand>> mCommandsForControllerMap;
-    private LinkedHashMap<LogicalQubitAddressForController, LogicalQubitAddressFromClient> addressesCorrespondenceMap;
+    //map for saving correspondence between qubit address from user and address, which will be send to controller
+    private LinkedHashMap<LogicalQubitAddressForController, LogicalQubitAddressFromClient> mAddressesCorrespondenceMap;
+    //need to retrieve user's commands list in a right order
     private List<OwnerData> mOwnerDataList;
-    private Thread threadForCommandsExecuting;
+    //thread, in which will be executed all commands
+    private Thread mThreadForCommandsExecuting;
 
     private ServiceManager() {
         mCommandsForControllerMap = new HashMap<OwnerData, List<LogicalAddressingCommand>>();
-        addressesCorrespondenceMap = new LinkedHashMap<LogicalQubitAddressForController, LogicalQubitAddressFromClient>();
+        mAddressesCorrespondenceMap = new LinkedHashMap<LogicalQubitAddressForController, LogicalQubitAddressFromClient>();
         mOwnerDataList = new LinkedList<OwnerData>();
         mQuantumMemoryOperator = QuantumMemoryOperator.getOperator();
     }
 
+    //call this method to start work with quantum machine
     public static ServiceManager getServiceManager() {
         if (mServiceManager == null) {
             mServiceManager = new ServiceManager();
         }
         return mServiceManager;
     }
-
+    //call this method to execute commands
     public void putCommandsToExecutionQueue(String userId, String commandsString) {
         try {
             OwnerData ownerData = new OwnerData(userId, System.currentTimeMillis());
             List<LogicalAddressingCommand> commandsListForController = checkCommandsAndTransformForController(ownerData, commandsString);
             mCommandsForControllerMap.put(ownerData, commandsListForController);
             mOwnerDataList.add(ownerData);
-            //executeNextCommand();
+            executeNextCommand();
         } catch (IllegalArgumentException e) {
+            System.out.println("UserId = " + userId + ", error caught: " + e.getMessage());
             //todo сказать пользователю, что json составлен неверно
         }
     }
 
+    /**
+     * check every command if it is composed in a right way, decompose logical qubit into two physical qubit
+     * @param ownerData user data, from which commands were sent
+     * @param commandsString json with commnads in String
+     * @return list in which every command logical qubit decomposed into two physical qubit
+     * @throws IllegalArgumentException if even one command composed with error
+     */
     private List<LogicalAddressingCommand> checkCommandsAndTransformForController(OwnerData ownerData, String commandsString) throws IllegalArgumentException {
         CommandsFromClientDTO commandsFromClientDTO;
         try {
@@ -60,7 +73,8 @@ public class ServiceManager {
             throw new IllegalArgumentException(exceptionStringJsonIsNotValid);
         }
         List<LogicalAddressingCommandFromClient> commandsFromClientList = commandsFromClientDTO.getLogicalAddressingCommandFromClientList();
-        if (commandsFromClientDTO.getQubitCount() > mQuantumMemoryOperator.getQubitsMaxCount() && commandsFromClientList.size() > mQuantumMemoryOperator.getCommandsMaxCount()) {
+        //check if memory can execute such count of commands and qubits
+        if (commandsFromClientDTO.getQubitCount() > mQuantumMemoryOperator.getQubitsMaxCount() || commandsFromClientList.size() > mQuantumMemoryOperator.getCommandsMaxCount()) {
             throw new IllegalArgumentException(exceptionStringQubitCount);
         }
         List<LogicalAddressingCommand> commandsListForController = new LinkedList<LogicalAddressingCommand>();
@@ -68,11 +82,13 @@ public class ServiceManager {
             if (!commandComposedRight(commandFromClient)) {
                 throw new IllegalArgumentException(exceptionStringJsonIsNotValid);
             } else {
+                //set owner data by myself
                 commandFromClient.getQubit_1().setOwnerData(ownerData);
                 if (commandFromClient.getQubit_2() != null) {
                     commandFromClient.getQubit_2().setOwnerData(ownerData);
                 }
                 List<LogicalQubitAddressForController> addressesForController = getAddressesForControllerFromLocalClientAddress(commandFromClient.getQubit_1());
+               //fill command for controller with all necessary data
                 LogicalAddressingCommand.Builder commandBuilder = new LogicalAddressingCommand.Builder();
                 commandBuilder
                         .setCommand(commandFromClient.getCommandType())
@@ -91,7 +107,7 @@ public class ServiceManager {
     }
 
     private boolean commandComposedRight(LogicalAddressingCommandFromClient commandFromClient) {
-        if (commandFromClient.getQubit_1() == null) {
+        if (commandFromClient.getQubit_1() == null || commandFromClient.getCommandParam() == null || commandFromClient.getCommandType() == null) {
             return false;
         } else if (commandFromClient.getCommandType() == CommandTypes.CQET && commandFromClient.getQubit_2() == null) {
             return false;
@@ -102,19 +118,22 @@ public class ServiceManager {
     private List<LogicalQubitAddressForController> getAddressesForControllerFromLocalClientAddress(LogicalQubitAddressFromClient qubitAddressFromClient) {
         List<LogicalQubitAddressForController> addressesForController = getGlobalLogicalQubitAddressFromLocalClient(qubitAddressFromClient);
         if (addressesForController.isEmpty()) {
+            //init two physical addresses with the same globalId and different memory part
             Long currentTimeInMillis = System.currentTimeMillis();
             addressesForController.add(new LogicalQubitAddressForController(currentTimeInMillis, 0));
             addressesForController.add(new LogicalQubitAddressForController(currentTimeInMillis, 1));
         }
-        addressesCorrespondenceMap.put(addressesForController.get(0), qubitAddressFromClient);
-        addressesCorrespondenceMap.put(addressesForController.get(1), qubitAddressFromClient);
+        mAddressesCorrespondenceMap.put(addressesForController.get(0), qubitAddressFromClient);
+        mAddressesCorrespondenceMap.put(addressesForController.get(1), qubitAddressFromClient);
         return addressesForController;
     }
 
+    //look for in the list have already been initialized qubit
+    //if not initialized returns empty list, else two physical qubit address for controller
     private List<LogicalQubitAddressForController> getGlobalLogicalQubitAddressFromLocalClient(LogicalQubitAddressFromClient qubitAddressFromClient) {
         List<LogicalQubitAddressForController> logicalQubitAddressForControllers = new LinkedList<LogicalQubitAddressForController>();
-        for (LogicalQubitAddressForController key : addressesCorrespondenceMap.keySet()) {
-            if (addressesCorrespondenceMap.get(key).equals(qubitAddressFromClient)) {
+        for (LogicalQubitAddressForController key : mAddressesCorrespondenceMap.keySet()) {
+            if (mAddressesCorrespondenceMap.get(key).equals(qubitAddressFromClient)) {
                 if (key.getMemoryPart() == 0) {
                     logicalQubitAddressForControllers.add(0, key);
                 } else {
@@ -126,14 +145,15 @@ public class ServiceManager {
     }
 
     public void executeNextCommand() {
-        if (threadForCommandsExecuting == null) {
-            threadForCommandsExecuting = new Thread(new Runnable() {
+        if (mThreadForCommandsExecuting == null) {
+            mThreadForCommandsExecuting = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (!mCommandsForControllerMap.isEmpty()) {
                         int commandsMaxCount = mQuantumMemoryOperator.getCommandsMaxCount();
                         Map<OwnerData, List<LogicalAddressingCommand>> dataForController = new HashMap<OwnerData, List<LogicalAddressingCommand>>();
                         int commandsCount = 0;
+                        //fill map which contains the largest possible number of commands that quantum machine can run at one time
                         for (OwnerData ownerData : mOwnerDataList) {
                             List<LogicalAddressingCommand> commandsList = mCommandsForControllerMap.get(ownerData);
                             if (commandsList != null) {
@@ -150,14 +170,14 @@ public class ServiceManager {
                             Map<LogicalQubitAddressForController, Boolean> measureResultsWithLogicalAddresses = results.get(ownerData);
                             Map<LogicalQubitAddressFromClient, TopLevelResult> measureResultsWithClientAddresses = new HashMap<LogicalQubitAddressFromClient, TopLevelResult>();
                             for (LogicalQubitAddressForController logicalQubitAddressForController : measureResultsWithLogicalAddresses.keySet()) {
-                                LogicalQubitAddressFromClient logicalQubitAddressFromClient = addressesCorrespondenceMap.get(logicalQubitAddressForController);
+                                LogicalQubitAddressFromClient logicalQubitAddressFromClient = mAddressesCorrespondenceMap.get(logicalQubitAddressForController);
                                 if (logicalQubitAddressFromClient != null) {
+                                    //fill TopLevelResult with results of two measured qubits with the same globalId and different memory part
                                     TopLevelResult oneLoqicalQubitResult = measureResultsWithClientAddresses.get(logicalQubitAddressFromClient);
                                     if (oneLoqicalQubitResult == null) {
                                         oneLoqicalQubitResult = new TopLevelResult();
                                         measureResultsWithClientAddresses.put(logicalQubitAddressFromClient, oneLoqicalQubitResult);
                                     }
-                                    //todo проверить: сначала положил в мар, потом изменяю значение полей одного из значений
                                     if (logicalQubitAddressForController.getMemoryPart() == 0) {
                                         oneLoqicalQubitResult.setQubit_1MeasureResult(measureResultsWithLogicalAddresses.get(logicalQubitAddressForController));
                                     } else {
@@ -167,13 +187,14 @@ public class ServiceManager {
                             }
                             LinkedHashMap<LogicalQubitAddressFromClient, Integer> resultsForSending = new LinkedHashMap<LogicalQubitAddressFromClient, Integer>();
                             for (LogicalQubitAddressFromClient addressFromClient : measureResultsWithClientAddresses.keySet()) {
+                                //transform measure result of two physical qubit to one logical qubit measure result
                                 TopLevelResult result = measureResultsWithClientAddresses.get(addressFromClient);
                                 if (result.getQubit_1MeasureResult() == false && result.getQubit_2MeasureResult() == true) {
                                     resultsForSending.put(addressFromClient, 0);
                                 } else if (result.getQubit_1MeasureResult() == true && result.getQubit_2MeasureResult() == false) {
                                     resultsForSending.put(addressFromClient, 1);
                                 } else {
-                                    //оба физических кубита дали при измерении 0 или 1 - ошибка
+                                    //both physical qubit are 0 or 1 - error
                                 }
                             }
                             printResults(ownerData, resultsForSending);
@@ -182,15 +203,15 @@ public class ServiceManager {
                             mOwnerDataList.remove(ownerData);
                         }
                     }
-                    threadForCommandsExecuting = null;
+                    mThreadForCommandsExecuting = null;
                 }
             });
-            threadForCommandsExecuting.run();
+            mThreadForCommandsExecuting.run();
         }
     }
 
     private void printResults(OwnerData ownerData, LinkedHashMap<LogicalQubitAddressFromClient, Integer> results) {
-        System.out.println("UserId = " + ownerData.getUserId());
+        System.out.println("UserId = " + ownerData.getUserId() + ", results:");
         for (LogicalQubitAddressFromClient addressFromClient : results.keySet()) {
             System.out.println("AddressFromClient = " + addressFromClient.getLogicalQubitAddress() + " , result = " + results.get(addressFromClient));
         }

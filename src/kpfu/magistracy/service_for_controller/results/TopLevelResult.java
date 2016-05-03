@@ -1,6 +1,8 @@
 package kpfu.magistracy.service_for_controller.results;
 
-
+/**
+ * measure result for two physical qubits = one logical qubit
+ */
 public class TopLevelResult {
 
     private boolean mQubit_1MeasureResult;

@@ -3,6 +3,7 @@ package kpfu.magistracy.service_for_controller;
 
 public class OwnerData {
 
+    //if user connected to quantum machine through internet userId is socket address
     private String userId;
     //time, when user's commands list was transformed
     private long timeStamp;

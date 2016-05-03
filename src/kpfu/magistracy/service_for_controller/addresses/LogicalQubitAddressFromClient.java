@@ -6,10 +6,11 @@ import kpfu.magistracy.service_for_controller.OwnerData;
 
 public class LogicalQubitAddressFromClient {
 
-    //локальный порядковый номер кубита в программе клиента
+    //Local ordinal qubit number in the client program
     @SerializedName("local_id")
     int mLogicalQubitAddress;
-    //data not from a client
+    //заполняю самостоятельно, нужен для однозначной идентификации локального кубита одного из пользователей
+    //fill by myself, need to uniquely identify every user's local qubit
     OwnerData mOwnerData;
 
     public LogicalQubitAddressFromClient(int logicalQubitAddress) {

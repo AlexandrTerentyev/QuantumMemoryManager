@@ -6,6 +6,7 @@ import kpfu.magistracy.service_for_controller.addresses.LogicalQubitAddressFromC
 
 
 public class LogicalAddressingCommandFromClient {
+    //command name from universal basis
     @SerializedName("command_name")
     private CommandTypes mCommandType;
     @SerializedName("command_param")

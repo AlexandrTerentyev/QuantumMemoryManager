@@ -75,6 +75,5 @@ public class Main {
         );
         commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
         serviceManager.putCommandsToExecutionQueue("2", new GsonBuilder().create().toJson(commandsFromClientDTO));
-        serviceManager.executeNextCommand();
     }
 }
