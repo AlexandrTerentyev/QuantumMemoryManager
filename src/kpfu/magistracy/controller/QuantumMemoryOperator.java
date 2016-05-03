@@ -117,6 +117,7 @@ public class QuantumMemoryOperator {
                             .setSecondQubit_Part2(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part2()));
                 }
                 PhysicalAddressingCommand physicalAddressingCommand = physicalAddressingCommandBuilder.build();
+                //add Init commands for qubits if it is necessary
                 if (mMemoryStateKeeper.needInitializeLogicalQubit(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2())) {
                     tempList.add(new InitCommand(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2()));
                     mMemoryStateKeeper.onQubitInitialized(physicalAddressingCommand.getFirstQubit_Part1());
@@ -132,6 +133,7 @@ public class QuantumMemoryOperator {
                 tempList.add(physicalAddressingCommand);
             }
             physicalAddressingCommands.addAll(tempList);
+            //add measure commands for every init command
             for (PhysicalAddressingCommand physicalAddressingCommand : tempList) {
                 if (physicalAddressingCommand.getCommandType() == CommandTypes.INIT) {
                     physicalAddressingCommands.add(new MeasureCommand(physicalAddressingCommand.getFirstQubit_Part1()));

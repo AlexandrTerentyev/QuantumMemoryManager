@@ -70,10 +70,11 @@ public class Main {
         commandFromClientList = new LinkedList<LogicalAddressingCommandFromClient>();
         commandFromClientList.add(new LogicalAddressingCommandFromClient(
                 CommandTypes.PHASE,
-                0.5,
+                Math.PI,
                 new LogicalQubitAddressFromClient(1))
         );
         commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
         serviceManager.putCommandsToExecutionQueue("2", new GsonBuilder().create().toJson(commandsFromClientDTO));
+        serviceManager.executeNextCommand();
     }
 }

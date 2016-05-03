@@ -46,7 +46,7 @@ public class ServiceManager {
             List<LogicalAddressingCommand> commandsListForController = checkCommandsAndTransformForController(ownerData, commandsString);
             mCommandsForControllerMap.put(ownerData, commandsListForController);
             mOwnerDataList.add(ownerData);
-            executeNextCommand();
+            //executeNextCommand();
         } catch (IllegalArgumentException e) {
             //todo сказать пользователю, что json составлен неверно
         }
@@ -125,7 +125,7 @@ public class ServiceManager {
         return logicalQubitAddressForControllers;
     }
 
-    private void executeNextCommand() {
+    public void executeNextCommand() {
         if (threadForCommandsExecuting == null) {
             threadForCommandsExecuting = new Thread(new Runnable() {
                 @Override
