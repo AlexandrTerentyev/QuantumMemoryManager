@@ -110,7 +110,7 @@ public class QuantumMemoryOperator {
                         .setFirstQubit_Part1(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getFirstQubit_Part1()))
                         .setFirstQubit_Part2(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getFirstQubit_Part2()));
 
-                //if second logical qubit is not null - get adress for it's parts and add to command
+                //if second logical qubit is not null - get address for it's parts and add to command
                 if (!logicalAddressingCommand.isSecondLogicalQubitNull()) {
                     physicalAddressingCommandBuilder
                             .setSecondQubit_Part1(mMemoryStateKeeper.getGlobalAddressForQubit(logicalAddressingCommand.getSecondQubit_Part1()))
@@ -119,10 +119,14 @@ public class QuantumMemoryOperator {
                 PhysicalAddressingCommand physicalAddressingCommand = physicalAddressingCommandBuilder.build();
                 if (mMemoryStateKeeper.needInitializeLogicalQubit(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2())) {
                     tempList.add(new InitCommand(physicalAddressingCommand.getFirstQubit_Part1(), physicalAddressingCommand.getFirstQubit_Part2()));
+                    mMemoryStateKeeper.onQubitInitialized(physicalAddressingCommand.getFirstQubit_Part1());
+                    mMemoryStateKeeper.onQubitInitialized(physicalAddressingCommand.getFirstQubit_Part2());
                 }
                 if (!logicalAddressingCommand.isSecondLogicalQubitNull()) {
                     if (mMemoryStateKeeper.needInitializeLogicalQubit(physicalAddressingCommand.getSecondQubit_Part1(), physicalAddressingCommand.getSecondQubit_Part2())) {
                         tempList.add(new InitCommand(physicalAddressingCommand.getSecondQubit_Part1(), physicalAddressingCommand.getSecondQubit_Part2()));
+                        mMemoryStateKeeper.onQubitInitialized(physicalAddressingCommand.getSecondQubit_Part1());
+                        mMemoryStateKeeper.onQubitInitialized(physicalAddressingCommand.getSecondQubit_Part2());
                     }
                 }
                 tempList.add(physicalAddressingCommand);

@@ -76,6 +76,10 @@ public class MemoryStateKeeper {
         return globalQubitAddress;
     }
 
+    public void onQubitInitialized(GlobalQubitAddress qubitAddress) {
+        initializedQubits.add(qubitAddress);
+    }
+
     public boolean needInitializeLogicalQubit(GlobalQubitAddress qubitPart_1, GlobalQubitAddress qubitPart_2) {
         if (initializedQubits.contains(qubitPart_1) && initializedQubits.contains(qubitPart_2)) return false;
         if (initializedQubits.contains(qubitPart_1) && !initializedQubits.contains(qubitPart_2) || !initializedQubits.contains(qubitPart_1) && initializedQubits.contains(qubitPart_2))

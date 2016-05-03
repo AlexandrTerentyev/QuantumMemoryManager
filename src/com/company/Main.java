@@ -61,7 +61,7 @@ public class Main {
         commandFromClientList.add(new LogicalAddressingCommandFromClient(
                 CommandTypes.QET,
                 Math.PI / 2,
-                new LogicalQubitAddressFromClient(1))
+                new LogicalQubitAddressFromClient(2))
         );
         commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
         serviceManager.putCommandsToExecutionQueue("1", new GsonBuilder().create().toJson(commandsFromClientDTO));
