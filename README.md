@@ -37,7 +37,7 @@ commandFromClientList.add(new LogicalAddressingCommandFromClient(
 commandsFromClientDTO.setLogicalAddressingCommandFromClientList(commandFromClientList);
 ```
 
-#####Пример отправки вышеописанных команд на выполнением в _ServiceManager_
+#####Пример отправки вышеописанных команд на выполнение в _ServiceManager_
 ```java
 serviceManager.putCommandsToExecutionQueue("1", new GsonBuilder().create().toJson(commandsFromClientDTO)); // 1 - userID
 ```
@@ -51,3 +51,10 @@ Main.testWholeCycle()
 ```java
 Main.main(String[] args)
 ```
+
+###Сборка _.jar_ 
+Сборка осуществляется при помощи _gradle_. Для получения _.jar_ файла необходимо выполнить в командной строке
+```
+./gradlew clean assemble
+```
+Требуемый файл - *quantum_memory_manager_library/build/libs/quantum_memory_manager_library.jar*
