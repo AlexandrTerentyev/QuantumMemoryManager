@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/QuantumMemoryManager.iml" filepath="$PROJECT_DIR$/QuantumMemoryManager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/QuantumMemoryManager .iml" filepath="$PROJECT_DIR$/.idea/modules/QuantumMemoryManager .iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library.iml" filepath="$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library.iml" group="quantum_memory_manager_library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library_main.iml" filepath="$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library_main.iml" group="quantum_memory_manager_library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library_test.iml" filepath="$PROJECT_DIR$/.idea/modules/quantum_memory_manager_library/quantum_memory_manager_library_test.iml" group="quantum_memory_manager_library" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample_project/sample_project.iml" filepath="$PROJECT_DIR$/.idea/modules/sample_project/sample_project.iml" group="sample_project" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample_project/sample_project_main.iml" filepath="$PROJECT_DIR$/.idea/modules/sample_project/sample_project_main.iml" group="sample_project" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sample_project/sample_project_test.iml" filepath="$PROJECT_DIR$/.idea/modules/sample_project/sample_project_test.iml" group="sample_project" />
     </modules>
   </component>
 </project>
