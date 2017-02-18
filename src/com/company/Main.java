@@ -51,7 +51,7 @@ public class Main {
     public static void testWholeCycle() {
         ServiceManager serviceManager = ServiceManager.getServiceManager();
         CommandsFromClientDTO commandsFromClientDTO = new CommandsFromClientDTO();
-        commandsFromClientDTO.setQubitCount(1);
+        commandsFromClientDTO.setQubitCount(2);
         List<LogicalAddressingCommandFromClient> commandFromClientList = new LinkedList<LogicalAddressingCommandFromClient>();
         commandFromClientList.add(new LogicalAddressingCommandFromClient(
                 CommandTypes.PHASE,
